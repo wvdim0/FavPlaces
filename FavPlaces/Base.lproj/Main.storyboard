@@ -6,7 +6,7 @@
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
-        <!--Root View Controller-->
+        <!--Favourite places-->
         <scene sceneID="AeV-Af-xcl">
             <objects>
                 <tableViewController id="TRD-5u-eJ0" customClass="MainViewController" customModule="FavPlaces" customModuleProvider="target" sceneMemberID="viewController">
@@ -29,7 +29,7 @@
                             <outlet property="delegate" destination="TRD-5u-eJ0" id="Frm-eZ-xn3"/>
                         </connections>
                     </tableView>
-                    <navigationItem key="navigationItem" title="Root View Controller" id="1nD-mc-gMm"/>
+                    <navigationItem key="navigationItem" title="Favourite places" id="1nD-mc-gMm"/>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="HUz-lU-UWz" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
@@ -42,6 +42,9 @@
                     <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="bYN-sT-Ilq">
                         <rect key="frame" x="0.0" y="44" width="414" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
+                        <textAttributes key="titleTextAttributes">
+                            <fontDescription key="fontDescription" name="Copperplate" family="Copperplate" pointSize="23"/>
+                        </textAttributes>
                     </navigationBar>
                     <connections>
                         <segue destination="TRD-5u-eJ0" kind="relationship" relationship="rootViewController" id="cmJ-70-TZX"/>
