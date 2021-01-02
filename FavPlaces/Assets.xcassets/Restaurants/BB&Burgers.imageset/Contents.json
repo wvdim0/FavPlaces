@@ -1,17 +1,17 @@
 {
   "images" : [
     {
-      "filename" : "Мясная Лавка.jpg",
+      "filename" : "BB&Burgers.jpg",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
-      "filename" : "Мясная Лавка@2x.jpg",
+      "filename" : "BB&Burgers@2x.jpg",
       "idiom" : "universal",
       "scale" : "2x"
     },
     {
-      "filename" : "Мясная Лавка@3x.jpg",
+      "filename" : "BB&Burgers@3x.jpg",
       "idiom" : "universal",
       "scale" : "3x"
     }

@@ -16,17 +16,13 @@ struct Place {
     var location: String
     var type: String
     
-    static let restNames = ["Burger Heroes",
-                     "Краснодарский парень",
-                     "Black Star Burger",
-                     "Ketch Up Burgers",
-                     "Burger King"]
+    static let restNames = ["Burger Heroes", "Corner", "Black Star Burger", "Ketch Up Burgers", "BB&Burgers"]
     
     static func getPlaces() -> [Place] {
         var places = [Place]()
         
         for place in restNames {
-            places.append(Place(image: UIImage(named: place), name: place, location: "Киров", type: "Бургерная"))
+            places.append(Place(image: UIImage(named: place), name: place, location: "Москва", type: "Бургерная"))
         }
         
         return places
