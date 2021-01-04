@@ -20,39 +20,6 @@ class MainViewController: UITableViewController {
         tableView.tableFooterView = UIView()
     }
     
-    // MARK: - Navigation
-    
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if segue.identifier == "editPlace" {
-            let navigationVC = segue.destination as! UINavigationController
-            let editPlaceVC = navigationVC.topViewController as! PlaceViewController
-            let indexForSelectedRow = tableView.indexPathForSelectedRow!.row
-            
-            editPlaceVC.title = "Edit place"
-            editPlaceVC.place = places[indexForSelectedRow]
-        } else if segue.identifier == "addPlace" {
-            let navigationVC = segue.destination as! UINavigationController
-            let addPlaceVC = navigationVC.topViewController as! PlaceViewController
-            
-            addPlaceVC.title = "Add place"
-        }
-    }
-    
-    @IBAction func unwindSegue(segue: UIStoryboardSegue) {
-        guard segue.identifier == "saveSegue" else { return }
-        let sourceVC = segue.source as! PlaceViewController
-        let placeFromSourceVC = sourceVC.place
-        
-        if let indexPathForEditedRow = tableView.indexPathForSelectedRow {
-            places[indexPathForEditedRow.row] = placeFromSourceVC
-            tableView.reloadRows(at: [indexPathForEditedRow], with: .fade)
-        } else {
-            let lastIndexPath = IndexPath(row: places.count, section: 0)
-            places.append(placeFromSourceVC)
-            tableView.insertRows(at: [lastIndexPath], with: .fade)
-        }
-    }
-    
     // MARK: - Table view data source
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -62,11 +29,13 @@ class MainViewController: UITableViewController {
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as! CustomTableViewCell
+        
+        let place = places[indexPath.row]
 
-        cell.imageOfPlace.image = places[indexPath.row].image
-        cell.nameLabel.text = places[indexPath.row].name
-        cell.locationLabel.text = places[indexPath.row].location
-        cell.typeLabel.text = places[indexPath.row].type
+        cell.imageOfPlace.image = place.image
+        cell.nameLabel.text = place.name
+        cell.locationLabel.text = place.location
+        cell.typeLabel.text = place.type
 
         cell.imageOfPlace.layer.cornerRadius = 12
         
@@ -92,6 +61,40 @@ class MainViewController: UITableViewController {
         let movedPlace = places.remove(at: sourceIndexPath.row)
         places.insert(movedPlace, at: destinationIndexPath.row)
         tableView.reloadData()
+    }
+    
+    // MARK: - Navigation
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == "editPlace" {
+            let navigationVC = segue.destination as! UINavigationController
+            let editPlaceVC = navigationVC.topViewController as! PlaceViewController
+            let indexForSelectedRow = tableView.indexPathForSelectedRow!.row
+            
+            editPlaceVC.title = "Edit place"
+            editPlaceVC.saveButtonState = true
+            editPlaceVC.place = places[indexForSelectedRow]
+        } else if segue.identifier == "addPlace" {
+            let navigationVC = segue.destination as! UINavigationController
+            let addPlaceVC = navigationVC.topViewController as! PlaceViewController
+            
+            addPlaceVC.title = "Add place"
+        }
+    }
+    
+    @IBAction func unwindSegue(segue: UIStoryboardSegue) {
+        guard segue.identifier == "saveSegue" else { return }
+        let placeVC = segue.source as! PlaceViewController
+        let placeFromPlaceVC = placeVC.place
+        
+        if let indexPathForEditedRow = tableView.indexPathForSelectedRow {
+            places[indexPathForEditedRow.row] = placeFromPlaceVC
+            tableView.reloadRows(at: [indexPathForEditedRow], with: .fade)
+        } else {
+            let lastIndexPath = IndexPath(row: places.count, section: 0)
+            places.append(placeFromPlaceVC)
+            tableView.insertRows(at: [lastIndexPath], with: .fade)
+        }
     }
 
 }

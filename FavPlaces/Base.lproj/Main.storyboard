@@ -217,7 +217,7 @@
                     <navigationItem key="navigationItem" title="Title" id="1jr-8A-3gj">
                         <barButtonItem key="leftBarButtonItem" systemItem="cancel" id="ttK-50-r20">
                             <connections>
-                                <segue destination="dkT-9Z-KJ0" kind="unwind" identifier="" unwindAction="unwindSegueWithSegue:" id="9P6-8w-qs6"/>
+                                <action selector="cancelAction:" destination="8rP-HS-1W9" id="1jF-tm-6c8"/>
                             </connections>
                         </barButtonItem>
                         <barButtonItem key="rightBarButtonItem" systemItem="save" id="Frw-VL-zGQ">
@@ -230,6 +230,7 @@
                         <outlet property="imageOfPlace" destination="nzO-O0-ygR" id="yYu-ti-e4D"/>
                         <outlet property="locationTF" destination="G4a-pF-71C" id="enX-fM-v4l"/>
                         <outlet property="nameTF" destination="d7e-V3-FSn" id="xXF-PE-6o7"/>
+                        <outlet property="saveButton" destination="Frw-VL-zGQ" id="ufF-zH-CAJ"/>
                         <outlet property="typeTF" destination="omD-be-oik" id="79p-XR-dwh"/>
                     </connections>
                 </tableViewController>
