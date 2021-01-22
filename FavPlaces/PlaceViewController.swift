@@ -49,6 +49,7 @@ class PlaceViewController: UITableViewController {
     private func setupNavigationBar() {
         title = placeToEdit?.name
         saveButton.isEnabled = true
+        self.navigationController?.navigationBar.prefersLargeTitles = true
     }
     
     // MARK: - Table view delegate

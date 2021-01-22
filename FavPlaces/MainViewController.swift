@@ -9,10 +9,14 @@
 import UIKit
 import RealmSwift
 
-class MainViewController: UITableViewController {
+class MainViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
     
+    @IBOutlet var tableView: UITableView!
+    @IBOutlet weak var segmentedControl: UISegmentedControl!
+    @IBOutlet weak var reverseSortingButton: UIBarButtonItem!
+    var ascendingSorting = true
     var places: Results<Place>!
-    
+        
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -21,18 +25,17 @@ class MainViewController: UITableViewController {
         }
         
         places = realm.objects(Place.self)
-        
-        navigationItem.leftBarButtonItem = editButtonItem
     }
     
     // MARK: - Adding places on first launch of the app
     
     private func addingPlacesOnfirstLaunch() {
-        let placesForFirstLaunch = [Place(imageData: UIImage(named: "Burger Heroes")?.pngData(), name: "Burger Heroes", location: "Москва", type: "Бургерная"),
-                                    Place(imageData: UIImage(named: "Corner")?.pngData(), name: "Corner", location: "Москва", type: "Бургерная"),
-                                    Place(imageData: UIImage(named: "Black Star Burger")?.pngData(), name: "Black Star Burger", location: "Москва", type: "Бургерная"),
-                                    Place(imageData: UIImage(named: "BB&Burgers")?.pngData(), name: "BB&Burgers", location: "Москва", type: "Бургерная"),
-                                    Place(imageData: UIImage(named: "Ketch Up Burgers")?.pngData(), name: "Ketch Up Burgers", location: "Москва", type: "Бургерная")]
+        var placesForFirstLaunch = [Place]()
+        let placeNames = ["Burger Heroes", "Corner", "Black Star Burger", "BB&Burgers", "Ketch Up Burgers"]
+        
+        for name in placeNames {
+            placesForFirstLaunch.append(Place(imageData: UIImage(named: name)?.pngData(), name: name, location: "Москва", type: "Бургерная"))
+        }
         
         for place in placesForFirstLaunch {
             StorageManager.savePlaceToDB(place)
@@ -43,11 +46,11 @@ class MainViewController: UITableViewController {
     
     // MARK: - Table view data source
     
-    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return places.isEmpty ? 0 : places.count
     }
     
-    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as! CustomTableViewCell
         
         let place = places[indexPath.row]
@@ -62,19 +65,11 @@ class MainViewController: UITableViewController {
         return cell
     }
     
-    override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
-        guard editingStyle == .delete else { return }
-        
+    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         let placeToDelete = places[indexPath.row]
         
         StorageManager.deletePlaceFromDB(placeToDelete)
         tableView.deleteRows(at: [indexPath], with: .fade)
-    }
-    
-    // MARK: - Table view delegate
-    
-    override func tableView(_ tableView: UITableView, editingStyleForRowAt indexPath: IndexPath) -> UITableViewCell.EditingStyle {
-        .delete
     }
     
     // MARK: - Navigation
@@ -87,6 +82,7 @@ class MainViewController: UITableViewController {
         let indexForSelectedRow = tableView.indexPathForSelectedRow!.row
         
         editPlaceVC.placeToEdit = places[indexForSelectedRow]
+        navigationVC.navigationBar.prefersLargeTitles = true
     }
     
     @IBAction func unwindSegue(segue: UIStoryboardSegue) {
@@ -100,6 +96,28 @@ class MainViewController: UITableViewController {
             placeVC.savePlace()
             tableView.insertRows(at: [lastIndexPath], with: .fade)
         }
+    }
+    
+    // MARK: - Sorting
+        
+    @IBAction func sortSelected(_ sender: UISegmentedControl) {
+        sorting()
+    }
+    
+    @IBAction func reversedSorting(_ sender: UIBarButtonItem) {
+        ascendingSorting.toggle()
+        
+        sorting()
+    }
+    
+    private func sorting() {
+        if segmentedControl.selectedSegmentIndex == 0 {
+            places = places.sorted(byKeyPath: "date", ascending: ascendingSorting)
+        } else {
+            places = places.sorted(byKeyPath: "name", ascending: ascendingSorting)
+        }
+        
+        tableView.reloadData()
     }
     
 }
