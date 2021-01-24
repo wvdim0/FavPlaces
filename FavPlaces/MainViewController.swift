@@ -88,14 +88,8 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
     @IBAction func unwindSegue(segue: UIStoryboardSegue) {
         guard let placeVC = segue.source as? PlaceViewController else { return }
         
-        if let indexPathForSelectedRow = tableView.indexPathForSelectedRow {
             placeVC.savePlace()
-            tableView.reloadRows(at: [indexPathForSelectedRow], with: .fade)
-        } else {
-            let lastIndexPath = IndexPath(row: places.count, section: 0)
-            placeVC.savePlace()
-            tableView.insertRows(at: [lastIndexPath], with: .fade)
-        }
+            sorting()
     }
     
     // MARK: - Sorting
