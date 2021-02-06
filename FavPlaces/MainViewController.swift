@@ -11,11 +11,22 @@ import RealmSwift
 
 class MainViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
     
+    private let searchController = UISearchController(searchResultsController: nil)
+    private var places: Results<Place>!
+    private var filteredPlaces: Results<Place>!
+    private var ascendingSorting = true
+    private var searchBarIsEmpty: Bool {
+        guard let text = searchController.searchBar.text else { return false }
+        
+        return text.isEmpty
+    }
+    private var isSearching: Bool {
+        return searchController.isActive && !searchBarIsEmpty
+    }
+    
     @IBOutlet var tableView: UITableView!
     @IBOutlet weak var segmentedControl: UISegmentedControl!
     @IBOutlet weak var reverseSortingButton: UIBarButtonItem!
-    var ascendingSorting = true
-    var places: Results<Place>!
         
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -25,6 +36,24 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
         }
         
         places = realm.objects(Place.self)
+        
+        // Setup the search controller
+        searchController.searchResultsUpdater = self
+        searchController.obscuresBackgroundDuringPresentation = false
+        searchController.searchBar.placeholder = "Search places"
+        definesPresentationContext = true
+        
+        if #available(iOS 13, *) {
+        }
+        else {
+            navigationItem.searchController = searchController
+        }
+    }
+    
+    override func viewWillLayoutSubviews() {
+        super.viewWillLayoutSubviews()
+        
+        navigationItem.searchController = searchController
     }
     
     // MARK: - Adding places on first launch of the app
@@ -34,7 +63,7 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
         let placeNames = ["Burger Heroes", "Corner", "Black Star Burger", "BB&Burgers", "Ketch Up Burgers"]
         
         for name in placeNames {
-            placesForFirstLaunch.append(Place(imageData: UIImage(named: name)?.pngData(), name: name, location: "Москва", type: "Бургерная"))
+            placesForFirstLaunch.append(Place(imageData: UIImage(named: name)?.pngData(), name: name, location: "Москва", type: "Бургерная", rating: 0.0))
         }
         
         for place in placesForFirstLaunch {
@@ -44,30 +73,39 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
         UserDefaults.standard.set(true, forKey: "firstLaunch")
     }
     
+    // MARK: - Tablew view delegate
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: true)
+    }
+    
     // MARK: - Table view data source
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return places.isEmpty ? 0 : places.count
+        if isSearching {
+            return filteredPlaces.count
+        } else {
+            return places.count
+        }
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as! CustomTableViewCell
         
-        let place = places[indexPath.row]
+        let place = isSearching ? filteredPlaces[indexPath.row] : places[indexPath.row]
         
         cell.imageOfPlace.image = UIImage(data: place.imageData!)
         cell.nameLabel.text = place.name
         cell.locationLabel.text = place.location
         cell.typeLabel.text = place.type
-        
-        cell.imageOfPlace.layer.cornerRadius = 12
+        cell.cosmosView.rating = place.rating
         
         return cell
     }
     
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         let placeToDelete = places[indexPath.row]
-        
+
         StorageManager.deletePlaceFromDB(placeToDelete)
         tableView.deleteRows(at: [indexPath], with: .fade)
     }
@@ -80,8 +118,10 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
         let navigationVC = segue.destination as! UINavigationController
         let editPlaceVC = navigationVC.topViewController as! PlaceViewController
         let indexForSelectedRow = tableView.indexPathForSelectedRow!.row
-        
-        editPlaceVC.placeToEdit = places[indexForSelectedRow]
+
+        let place = isSearching ? filteredPlaces[indexForSelectedRow] : places[indexForSelectedRow]
+
+        editPlaceVC.placeToEdit = place
         navigationVC.navigationBar.prefersLargeTitles = true
     }
     
@@ -106,10 +146,32 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
     
     private func sorting() {
         if segmentedControl.selectedSegmentIndex == 0 {
-            places = places.sorted(byKeyPath: "date", ascending: ascendingSorting)
+            if isSearching {
+                filteredPlaces = filteredPlaces.sorted(byKeyPath: "date", ascending: ascendingSorting)
+            } else {
+                places = places.sorted(byKeyPath: "date", ascending: ascendingSorting)
+            }
         } else {
-            places = places.sorted(byKeyPath: "name", ascending: ascendingSorting)
+            if isSearching {
+                filteredPlaces = filteredPlaces.sorted(byKeyPath: "name", ascending: ascendingSorting)
+            } else {
+                places = places.sorted(byKeyPath: "name", ascending: ascendingSorting)
+            }
         }
+        
+        tableView.reloadData()
+    }
+    
+}
+
+extension MainViewController: UISearchResultsUpdating {
+    
+    func updateSearchResults(for searchController: UISearchController) {
+        filterPlacesForSearchText(searchController.searchBar.text!)
+    }
+    
+    private func filterPlacesForSearchText(_ searchText: String) {
+        filteredPlaces = places.filter("name CONTAINS[c] %@ OR location CONTAINS[c] %@ OR type CONTAINS[c] %@", searchText, searchText, searchText)
         
         tableView.reloadData()
     }

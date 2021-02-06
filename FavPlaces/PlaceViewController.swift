@@ -10,7 +10,7 @@ import UIKit
 
 class PlaceViewController: UITableViewController {
     
-    var placeToEdit: Place?
+    var placeToEdit: Place!
     var imageIsChanged = false
     
     @IBOutlet weak var saveButton: UIBarButtonItem!
@@ -18,6 +18,7 @@ class PlaceViewController: UITableViewController {
     @IBOutlet weak var placeName: UITextField!
     @IBOutlet weak var placeLocation: UITextField!
     @IBOutlet weak var placeType: UITextField!
+    @IBOutlet weak var ratingControl: RatingControl!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -42,6 +43,7 @@ class PlaceViewController: UITableViewController {
         placeName.text = placeToEdit?.name
         placeLocation.text = placeToEdit?.location
         placeType.text = placeToEdit?.type
+        ratingControl.rating = Int(placeToEdit.rating)
         
         placeImage.contentMode = .scaleAspectFill
     }
@@ -55,7 +57,7 @@ class PlaceViewController: UITableViewController {
     // MARK: - Table view delegate
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        guard indexPath.row == 0 else { return }
+        guard indexPath == [0, 0] else { return }
         
         let cameraIcon = #imageLiteral(resourceName: "camera")
         let photoIcon = #imageLiteral(resourceName: "photo")
@@ -92,14 +94,15 @@ class PlaceViewController: UITableViewController {
         
         let imageData = image?.pngData()
         
-        let place = Place(imageData: imageData, name: placeName.text!, location: placeLocation.text, type: placeType.text)
-        
+        let place = Place(imageData: imageData, name: placeName.text!, location: placeLocation.text, type: placeType.text, rating: Double(ratingControl.rating))
+
         if placeToEdit != nil {
             try! realm.write {
                 placeToEdit?.imageData = place.imageData
                 placeToEdit?.name = place.name
                 placeToEdit?.location = place.location
                 placeToEdit?.type = place.type
+                placeToEdit?.rating = place.rating
             }
         } else {
             StorageManager.savePlaceToDB(place)
