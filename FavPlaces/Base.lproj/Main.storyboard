@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="16097.3" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="sy8-W8-icu">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="17701" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="sy8-W8-icu">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="16087"/>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17703"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -17,7 +19,7 @@
                         <subviews>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="85" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="SaG-bx-eOd">
                                 <rect key="frame" x="0.0" y="120" width="414" height="776"/>
-                                <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                 <inset key="separatorInset" minX="15" minY="0.0" maxX="15" maxY="0.0"/>
                                 <prototypes>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="cell" id="d60-WZ-Q86" customClass="CustomTableViewCell" customModule="FavPlaces" customModuleProvider="target">
@@ -59,7 +61,7 @@
                                                 </stackView>
                                                 <view contentMode="scaleToFill" placeholderIntrinsicWidth="110" placeholderIntrinsicHeight="17" translatesAutoresizingMaskIntoConstraints="NO" id="amE-24-jGc" customClass="CosmosView" customModule="Cosmos">
                                                     <rect key="frame" x="289" y="34" width="110" height="17"/>
-                                                    <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                                                    <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                                     <constraints>
                                                         <constraint firstAttribute="width" constant="110" id="m3q-ca-3Hn"/>
                                                     </constraints>
@@ -116,7 +118,8 @@
                                 </connections>
                             </segmentedControl>
                         </subviews>
-                        <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                        <viewLayoutGuide key="safeArea" id="yTb-qC-qEc"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
                             <constraint firstAttribute="bottom" secondItem="SaG-bx-eOd" secondAttribute="bottom" id="5HI-n3-NfY"/>
                             <constraint firstItem="yTb-qC-qEc" firstAttribute="trailing" secondItem="SaG-bx-eOd" secondAttribute="trailing" id="5nb-Dk-oZQ"/>
@@ -126,7 +129,6 @@
                             <constraint firstItem="SaG-bx-eOd" firstAttribute="top" secondItem="PGP-tc-gqa" secondAttribute="bottom" constant="1" id="ebq-p5-Jgv"/>
                             <constraint firstItem="PGP-tc-gqa" firstAttribute="top" secondItem="yTb-qC-qEc" secondAttribute="top" id="hLP-ha-6GH"/>
                         </constraints>
-                        <viewLayoutGuide key="safeArea" id="yTb-qC-qEc"/>
                     </view>
                     <navigationItem key="navigationItem" title="Favorite places" id="iGo-Sh-ZPH">
                         <barButtonItem key="leftBarButtonItem" title="Item" image="arrow.up.arrow.down" catalog="system" id="Q2I-4b-hQm">
@@ -157,7 +159,7 @@
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="static" style="grouped" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="18" sectionFooterHeight="18" id="GOp-3p-9HJ">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="842"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
+                        <color key="backgroundColor" systemColor="groupTableViewBackgroundColor"/>
                         <inset key="separatorInset" minX="15" minY="0.0" maxX="0.0" maxY="0.0"/>
                         <sections>
                             <tableViewSection id="xkD-Nt-IN3">
@@ -365,11 +367,25 @@
             <point key="canvasLocation" x="981" y="66"/>
         </scene>
     </scenes>
+    <designables>
+        <designable name="amE-24-jGc">
+            <size key="intrinsicContentSize" width="110" height="17"/>
+        </designable>
+        <designable name="viW-if-oqP">
+            <size key="intrinsicContentSize" width="252" height="44"/>
+        </designable>
+    </designables>
     <inferredMetricsTieBreakers>
         <segue reference="LsL-Mo-JcE"/>
     </inferredMetricsTieBreakers>
     <resources>
         <image name="Photo" width="195" height="196"/>
-        <image name="arrow.up.arrow.down" catalog="system" width="128" height="96"/>
+        <image name="arrow.up.arrow.down" catalog="system" width="128" height="98"/>
+        <systemColor name="groupTableViewBackgroundColor">
+            <color red="0.94901960784313721" green="0.94901960784313721" blue="0.96862745098039216" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </systemColor>
+        <systemColor name="systemBackgroundColor">
+            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
     </resources>
 </document>

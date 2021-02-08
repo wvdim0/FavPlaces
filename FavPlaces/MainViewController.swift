@@ -105,9 +105,32 @@ class MainViewController: UIViewController, UITableViewDataSource, UITableViewDe
     
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         let placeToDelete = places[indexPath.row]
-
-        StorageManager.deletePlaceFromDB(placeToDelete)
-        tableView.deleteRows(at: [indexPath], with: .fade)
+        
+        let deletePlaceActionSheet = UIAlertController(title: "\n\n\n\n\n", message: "Are you sure you want to delete the \(placeToDelete.name)?", preferredStyle: .actionSheet)
+        
+        let placeImageView = UIImageView()
+        placeImageView.image = UIImage(data: placeToDelete.imageData!)
+        placeImageView.layer.cornerRadius = 12
+        placeImageView.clipsToBounds = true
+        
+        deletePlaceActionSheet.view.addSubview(placeImageView)
+        
+        placeImageView.translatesAutoresizingMaskIntoConstraints = false
+        placeImageView.widthAnchor.constraint(equalToConstant: 65).isActive = true
+        placeImageView.heightAnchor.constraint(equalToConstant: 65).isActive = true
+        placeImageView.centerXAnchor.constraint(equalTo: deletePlaceActionSheet.view.centerXAnchor).isActive = true
+        placeImageView.topAnchor.constraint(equalTo: deletePlaceActionSheet.view.topAnchor, constant: 28).isActive = true
+        
+        let deletePlaceAction = UIAlertAction(title: "Yes", style: .destructive) { _ in
+            StorageManager.deletePlaceFromDB(placeToDelete)
+            tableView.deleteRows(at: [indexPath], with: .fade)
+        }
+        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel)
+        
+        deletePlaceActionSheet.addAction(deletePlaceAction)
+        deletePlaceActionSheet.addAction(cancelAction)
+        
+        present(deletePlaceActionSheet, animated: true)
     }
     
     // MARK: - Navigation
